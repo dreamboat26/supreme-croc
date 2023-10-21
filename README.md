@@ -1,4 +1,4 @@
- # Project 1 - Digit Recognition Part 1
+ # Project 2 - Digit Recognition Part 1
  
  ## Problem Statement : -
   Alice, Bob, and Daniel are friends learning machine learning together. After watching a few lectures, they are very proud of having learned many useful tools, including linear and logistic regression, non-linear features, regularization, and kernel tricks. To see how these methods can be used to solve a real life problem, they decide to get their hands dirty with the famous digit recognition problem using the MNIST (Mixed National Institute of Standards and Technology) database.
