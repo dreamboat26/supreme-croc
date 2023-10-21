@@ -1,0 +1,65 @@
+In this problem, we are going to go beyond the basic MNIST. 
+We will train a few neural networks to solve the problem of hand-written digit recognition using a multi-digit version of MNIST. 
+
+# Fully connected network 
+ Complete the code main in mlp.py to build a fully-connected model with a single hidden layer with 64 units.
+
+For this, you need to make use of Linear layers in PyTorch; Unlike in the previous single-digit case, here you need to use two separate linear output layers, to generate the two outputs (corresponding to the first and second digits).
+
+Note that we have provided you with an implementation of Flatten, which maps a higher dimensional tensor into an N x d one, where N is the number of samples in your batch and d is the length of the flattened dimension (if your tensor is N x h x w, the flattened dimension is
+d=(h*w).
+class MLP(nn.Module):
+
+    def __init__(self, input_dimension):
+        super(MLP, self).__init__()
+        self.flatten = Flatten()
+        self.linear1 = nn.Linear(input_dimension, 64)
+        self.linear2 = nn.Linear(64, 20)
+        
+    def forward(self, x):
+        xf = self.flatten(x)
+        xl1 = self.linear1(xf)
+        xl2 = self.linear2(xl1)
+        out_first_digit = xl2[:,:10]
+        out_second_digit = xl2[:,10:]
+        
+        return out_first_digit, out_second_digit
+
+
+# Convolutional model 
+ Complete the code main in conv.py to build a convolutional model.
+
+For this, you need to make use of Conv2D layers and MaxPool2d layers (and perhaps Dropout) in PyTorch. 
+Make sure that the last layer of the neural network is a fully connected (Linear) layer. 
+You may start with the architecture used in the CNN in the previous tab, but modify to generate 2 outputs. 
+
+class CNN(nn.Module):
+
+    def __init__(self, input_dimension):
+        super(CNN, self).__init__()
+        self.conv2d_1 = nn.Conv2d(1, 32, (3, 3))
+        self.relu = nn.ReLU()
+        self.maxpool2d = nn.MaxPool2d((2,2))
+        self.conv2d_2 = nn.Conv2d(32, 64, (3, 3))
+        self.flatten = Flatten() 
+        self.linear1 = nn.Linear(2880, 64)
+        self.dropout = nn.Dropout(p = 0.5)
+        self.linear2 = nn.Linear(64, 20)
+        
+    def forward(self, x):
+        x = self.conv2d_1(x)
+        x = self.relu(x)
+        x = self.maxpool2d(x) 
+        x = self.conv2d_2(x)
+        x = self.relu(x)
+        x = self.maxpool2d(x)
+        x = self.flatten(x)
+        x = self.linear1(x)
+        x = self.dropout(x)
+        x = self.linear2(x)
+        
+        out_first_digit = x[:,:10]
+        out_second_digit = x[:,10:]
+        
+        return out_first_digit, out_second_digit
+
