@@ -1,17 +1,11 @@
- # Project 0
+ # Project 1 - Digit Recognition Part 1
  
  ## Problem Statement : -
- The goal of this project 0 is to help you set up your python environment and to give you an introduction to the mechanics of the online grading system.
- As a reminder, this course assumes a basic understanding of Python at the level of 6.00.1x Introduction to Computer Science and Programming using Python (also on MIT Open      CourseWare). 
- 
- This means you should be proficient in the following: functions, tuples and lists, mutability, recursion, dictionaries, and object-oriented programming. Additionally, we expect you to be able to install the required packages using pip and be comfortable reading the documentation of these packages to find out more about the functions you are not familiar with. 
+  Alice, Bob, and Daniel are friends learning machine learning together. After watching a few lectures, they are very proud of having learned many useful tools, including linear and logistic regression, non-linear features, regularization, and kernel tricks. To see how these methods can be used to solve a real life problem, they decide to get their hands dirty with the famous digit recognition problem using the MNIST (Mixed National Institute of Standards and Technology) database.
 
-## Required python packages
+Hearing that you are an excellent student in the MITx machine learning class with solid understanding of the material and great coding ability in Python, they decide to invite you to their team and help them with implementing these different algorithms.
 
-Throughout this course, we will be using Python 3.8 along with the following packages. Code written in new versions of python will be accepted, as long as functions/features that are available only in Python 3.9 or beyond are not used.
-- NumPy
-- matplotlib
-- scikit-learn
-- SciPy
-- tqdm
--  PyTorch
+The MNIST database contains binary images of handwritten digits commonly used to train image processing systems. The digits were collected from among Census Bureau employees and high school students. The database contains 60,000 training digits and 10,000 testing digits, all of which have been size-normalized and centered in a fixed-size image of 28 × 28 pixels. Many methods have been tested with this dataset and in this project, you will get a chance to experiment with the task of classifying these images into the correct digit using some of the methods you have learned so far. 
+
+
+![Capture5](https://github.com/dreamboat26/supreme-croc/assets/125608791/0a34e375-6606-4b51-ac6b-81ddbc30d8f4)
