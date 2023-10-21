@@ -1,0 +1,47 @@
+Next, we are going to apply convolutional neural networks to the same task. 
+These networks have demonstrated great performance on many deep learning tasks, especially in computer vision. 
+
+# Convolutional Neural Networks 
+complete the code to implement a convolutional neural network with following layers in order:
+
+    A convolutional layer with 32 filters of size 3x3
+
+    A ReLU nonlinearity
+
+    A max pooling layer with size 2x2 
+
+    A convolutional layer with 64 filters of size 3x3
+
+    A ReLU nonlinearity 
+
+    A max pooling layer with size 2x2
+
+    A flatten layer
+
+    A fully connected layer with 128 neurons
+
+    A dropout layer with drop probability 0.5
+
+    A fully-connected layer with 10 neurons
+
+Without GPU acceleration, you will likely find that this network takes quite a long time to train.
+For that reason, we don't expect you to actually train this network until convergence. 
+Implementing the layers and verifying that you get approximately 93% training accuracy and 98% validation accuracy after one training epoch (this should take less than 10 minutes) is enough for this project. 
+If you are curious, you can let the model train longer; if implemented correctly, your model should achieve >99% test accuracy after 10 epochs of training. 
+If you have access to a CUDA compatible GPU, you could even try configuring PyTorch to use your GPU.
+
+model = nn.Sequential(
+          nn.Conv2d(1, 32, (3, 3)),
+          nn.ReLU(),
+          nn.MaxPool2d((2, 2)),
+          nn.Conv2d(32,64,(3,3)),
+          nn.ReLU(),
+          nn.MaxPool2d((2,2)),
+          Flatten(),
+          nn.Linear(1600,128),
+          nn.Dropout(0.5),
+          nn.Linear(128,10),
+        )
+
+
+
