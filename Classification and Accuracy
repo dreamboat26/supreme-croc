@@ -1,0 +1,47 @@
+Now we need a way to actually use our model to classify the data points. 
+In this section, you will implement a way to classify the data points using your model parameters, and then measure the accuracy of your model. 
+
+#Classification
+Implement a classification function that uses theta and theta_not to classify a set of data points. 
+You are given the feature matrix theta, and theta_not as defined in previous sections. This function should return a numpy array of -1s and 1s. 
+If a prediction is greater than zero, it should be considered a positive classification. 
+
+def classify(feature_matrix, theta, theta_0):
+    (nsamples, nfeatures) = feature_matrix.shape
+    predictions = np.zeros(nsamples)
+    for i in range(nsamples):
+        feature_vector = feature_matrix[i]
+        prediction = np.dot(theta, feature_vector) + theta_0
+        if (prediction > 0):
+            predictions[i] = 1
+        else:
+            predictions[i] = -1
+    return predictions
+
+# Accuracy 
+ The accuracy function takes a numpy array of predicted labels and a numpy array of actual labels and returns the prediction accuracy. You should use this function along with the functions that you have implemented thus far in order to implement classifier_accuracy.
+
+The classifier_accuracy function should take 6 arguments:
+
+    a classifier function that, itself, takes arguments (feature_matrix, labels, **kwargs)
+
+    the training feature matrix
+
+    the validation feature matrix
+
+    the training labels
+
+    the valiation labels
+
+    a **kwargs argument to be passed to the classifier function
+
+This function should train the given classifier using the training data and then compute compute the classification accuracy on both the train and validation data. The return values should be a tuple where the first value is the training accuracy and the second value is the validation accuracy. 
+
+def classifier_accuracy(classifier,train_feature_matrix,val_feature_matrix,train_labels,val_labels,**kwargs):
+    theta, theta_0 = classifier(train_feature_matrix, train_labels, **kwargs)
+    train_predict_labels = classify(train_feature_matrix, theta, theta_0)
+    val_predict_labels = classify(val_feature_matrix, theta, theta_0)
+    train_accuracy = accuracy(train_predict_labels, train_labels)
+    val_accuracy = accuracy(val_predict_labels, val_labels)
+    return (train_accuracy, val_accuracy)
+
