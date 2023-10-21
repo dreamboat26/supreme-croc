@@ -1,0 +1,49 @@
+Bob thinks it is clearly not a regression problem, but a classification problem. He thinks that we can change it into a binary classification and use the support vector machine we learned in Lecture 4 to solve the problem. 
+In order to do so, he suggests that we can build an one vs. rest model for every digit. 
+For example, classifying the digits into two classes: 0 and not 0.
+Bob wrote a function run_svm_one_vs_rest_on_MNIST where he changed the labels of digits 1-9 to 1 and keeps the label 0 for digit 0. 
+He also found that sklearn package contains an SVM model that you can use directly. 
+He gave you the link to this model and hopes you can tell him how to use that. 
+
+#  One vs. Rest SVM 
+Use the sklearn package and build the SVM model on your local machine. Use random_state = 0, C=0.1 and default values for other parameters. 
+
+def one_vs_rest_svm(train_x, train_y, test_x):
+    """
+    Trains a linear SVM for binary classifciation
+
+    Args:
+        train_x - (n, d) NumPy array (n datapoints each with d features)
+        train_y - (n, ) NumPy array containing the labels (0 or 1) for each training data point
+        test_x - (m, d) NumPy array (m datapoints each with d features)
+    Returns:
+        pred_test_y - (m,) NumPy array containing the labels (0 or 1) for each test data point
+    """
+    clf = LinearSVC(C = 0.1, random_state = 0)
+    clf.fit(train_x, train_y)
+    
+    pred_test_y = clf.predict(test_x)
+    
+    return pred_test_y
+
+#  Multiclass SVM 
+In fact, sklearn already implements a multiclass SVM with a one-vs-rest strategy. Use LinearSVC to build a multiclass SVM model 
+
+def multi_class_svm(train_x, train_y, test_x):
+    """
+    Trains a linear SVM for multiclass classifciation using a one-vs-rest strategy
+
+    Args:
+        train_x - (n, d) NumPy array (n datapoints each with d features)
+        train_y - (n, ) NumPy array containing the labels (int) for each training data point
+        test_x - (m, d) NumPy array (m datapoints each with d features)
+    Returns:
+        pred_test_y - (m,) NumPy array containing the labels (int) for each test data point
+    """
+    clf = LinearSVC(C = 0.1, random_state = 0)
+    clf.fit(train_x, train_y)
+    
+    pred_test_y = clf.predict(test_x)
+    
+    return pred_test_y
+
