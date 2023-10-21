@@ -1,0 +1,22 @@
+The first step is to design the activation function for each neuron. 
+In this problem, we will initialize the network weights to 1, use ReLU for the activation function of the hidden layers, and use an identity function for the output neuron. 
+The hidden layer has a bias but the output layer does not. 
+Complete the helper functions in neural_networks.py, including rectified_linear_unit and rectified_linear_unit_derivative, for you to use in the NeuralNetwork class, and implement them below. 
+
+#  Rectified Linear Unit 
+First implement the ReLu activation function, which computes the ReLu of a scalar. 
+
+def rectified_linear_unit(x):
+    """ Returns the ReLU of x, or the maximum between 0 and x."""
+    return max(0,x)
+
+#  Taking the Derivative 
+Now implement its derivative so that we can properly run backpropagation when training the net. Note: we will consider the derivative at zero to have the same value as the derivative at all negative points. 
+
+def rectified_linear_unit_derivative(x):
+    """ Returns the derivative of ReLU."""
+    if x <= 0:
+        return 0
+    else:
+        return 1
+
