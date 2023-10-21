@@ -1,0 +1,45 @@
+Now you will implement the Perceptron algorithm
+
+#  Perceptron Single Step Update 
+Now you will implement the single step update for the perceptron algorithm (implemented with 0 - 1 loss). 
+You will be given the feature vector as an array of numbers, the current theta and theta_not parameters, and the correct label of the feature vector. 
+The function should return a tuple in which the first element is the correctly updated value of theta and the second element is the correctly updated value of theta_not.
+
+def perceptron_single_step_update(feature_vector,label,current_theta,current_theta_0):
+    if label*(np.dot(current_theta,feature_vector)+current_theta_0)<=0:
+        current_theta+=label*feature_vector
+        current_theta_0+=label
+    return (current_theta,current_theta_0)
+
+
+#  Full Perceptron Algorithm 
+
+In this step you will implement the full perceptron algorithm. 
+You will be given the same feature matrix and labels array as you were given in The Complete Hinge Loss. 
+You will also be given T, the maximum number of times that you should iterate through the feature matrix before terminating the algorithm. Initialize theta and theta_not to zero. 
+This function should return a tuple in which the first element is the final value of theta and the second element is the value of theta_not.
+
+def perceptron(feature_matrix,labels,T):
+    (nsamples,nfeatures)=feature_matrix.shape
+    theta=np.zeros(nfeatures)
+    theta_0=0.0
+    for t in range(T):
+        for i in get_order(nsamples):
+            theta,theta_0=perceptron_single_step_update(feature_matrix[i],labels[i],theta,theta_0)
+    return (theta,theta_0)
+
+#  Average Perceptron Algorithm 
+
+The average perceptron will add a modification to the original perceptron algorithm: since the basic algorithm continues updating as the algorithm runs, nudging parameters in possibly conflicting directions, it is better to take an average of those parameters as the final answer. 
+Every update of the algorithm is the same as before. The returned parameters theta, however, are an average of the theta's across the nT steps. 
+
+def average_perceptron(feature_matrix,labels,T):
+    theta, theta_0 = np.zeros((feature_matrix.shape[1],)), 0
+    c_theta, c_theta_0 = np.zeros((feature_matrix.shape[1],)), 0
+    for _ in range(T):
+        for i in get_order(feature_matrix.shape[0]):
+            theta, theta_0 = perceptron_single_step_update(feature_matrix[i,:], labels[i], theta, theta_0)
+            c_theta, c_theta_0 = c_theta + theta, c_theta_0 + theta_0
+    n_samples = T * feature_matrix.shape[0]
+    return c_theta / n_samples, c_theta_0 / n_samples
+
