@@ -1,0 +1,76 @@
+Single step update - Write a function tabular_q_learning that updates the single Q-value, given the transition date (s,c,R(s,c),s').
+
+def tabular_q_learning(q_func, current_state_1, current_state_2, action_index,
+                       object_index, reward, next_state_1, next_state_2,
+                       terminal):
+    """Update q_func for a given transition
+
+    Args:
+        q_func (np.ndarray): current Q-function
+        current_state_1, current_state_2 (int, int): two indices describing the current state
+        action_index (int): index of the current action
+        object_index (int): index of the current object
+        reward (float): the immediate reward the agent recieves from playing current command
+        next_state_1, next_state_2 (int, int): two indices describing the next state
+        terminal (bool): True if this episode is over
+
+    Returns:
+        None
+    """
+    if terminal == False:   
+
+        q_func[current_state_1, current_state_2, action_index, object_index] \
+            =  (1-ALPHA)*q_func[current_state_1, current_state_2, action_index, object_index] \
+                + ALPHA*(reward + GAMMA*np.max(q_func[next_state_1, next_state_2]))
+
+    # in terminal state there is nothing to update from the next state 
+    # but quest the reward still count a state with discounted factor  
+    else:
+        q_func[current_state_1, current_state_2, action_index, object_index] \
+            =  (1-ALPHA)*q_func[current_state_1, current_state_2, action_index, object_index] \
+                + ALPHA*reward
+
+    return None  
+
+
+Epsilon-greedy exploration - 
+Note that the Q-learning algorithm does not specify how we should interact in the world so as to learn quickly. 
+It merely updates the values based on the experience collected. If we explore randomly, i.e., always select actions at random, we would most likely not get anywhere. 
+A better option is to exploit what we have already learned, as summarized by current Q-values. 
+We can always act greedily with respect to the current estimates, i.e., take an action pi(s)=argmax Q(s,c). 
+Of course, early on, these are not necessarily very good actions. 
+For this reason, a typical exploration strategy is to follow a so-called epsilon-greedy policy: with probability take a random action out of with probability (1-epsilon) 
+follow pi(s)=argmax Q(s,c). The value of epsilon ere balances exploration vs exploitation. 
+A large value of epsilon means exploring more (randomly), not using much of what we have learned. 
+A small epsilon, on the other hand, will generate experience consistent with the current estimates of Q-values. 
+
+
+def epsilon_greedy(state_1, state_2, q_func, epsilon):
+    """Returns an action selected by an epsilon-Greedy exploration policy
+
+    Args:
+        state_1, state_2 (int, int): two indices describing the current state
+        q_func (np.ndarray): current Q-function
+        epsilon (float): the probability of choosing a random command
+
+    Returns:
+        (int, int): the indices describing the action/object to take
+    """
+    action_index, object_index = None, None
+
+    res = np.random.choice(a = [0, 1], p = [epsilon, 1-epsilon])
+
+    # optimal policy
+    if res == 1:
+        # fetch max argument index by np.unravel_index 
+        ind = np.unravel_index(np.argmax(q_func[state_1, state_2], axis=None), q_func[state_1, state_2].shape)
+        action_index = ind[0]
+        object_index = ind[1]
+    # random select action-object 
+    if res == 0:
+        action_index = np.random.randint(NUM_ACTIONS)
+        object_index = np.random.randint(NUM_OBJECTS)
+
+    return (action_index, object_index)
+
+
