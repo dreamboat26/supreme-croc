@@ -1,0 +1,90 @@
+EM with Matrix Completion
+Implementing E-step : In em.py, fill in the estep function so that it works with partially observed vectors where missing values are indicated with zeros, and perform the 
+computations in the log domain to help with numerical stability. 
+
+def estep(X: np.ndarray, mixture: GaussianMixture) -> Tuple[np.ndarray, float]:
+    """E-step: Softly assigns each datapoint to a gaussian component
+
+    Args:
+        X: (n, d) array holding the data, with incomplete entries (set to 0)
+        mixture: the current gaussian mixture
+
+    Returns:
+        np.ndarray: (n, K) array holding the soft counts
+            for all components for all examples
+        float: log-likelihood of the assignment
+
+    """
+    n, d = X.shape
+    mu, var, pi = mixture  
+    K = mu.shape[0]
+    delta = X.astype(bool).astype(int)
+    f = (np.sum(X**2, axis=1)[:,None] + (delta @ mu.T**2) - 2*(X @ mu.T))/(2*var)
+    pre_exp = (-np.sum(delta, axis=1).reshape(-1,1)/2.0) @ (np.log((2*np.pi*var)).reshape(-1,1)).T
+    f = pre_exp - f
+    f = f + np.log(pi + 1e-16) 
+    logsums = logsumexp(f, axis=1).reshape(-1,1) 
+    log_posts = f - logsums 
+    log_lh = np.sum(logsums, axis=0).item()   
+    
+    return np.exp(log_posts), log_lh
+
+
+ Implementing M-step : In em.py, fill in the mstep function so that it works with partially observed vectors where missing values are indicated with zeros, and 
+perform the computations in the log domain to help with numerical stability. 
+
+def mstep(X: np.ndarray, post: np.ndarray, mixture: GaussianMixture,
+          min_variance: float = .25) -> GaussianMixture:
+    """M-step: Updates the gaussian mixture by maximizing the log-likelihood
+    of the weighted dataset
+
+    Args:
+        X: (n, d) array holding the data, with incomplete entries (set to 0)
+        post: (n, K) array holding the soft counts
+            for all components for all examples
+        mixture: the current gaussian mixture
+        min_variance: the minimum variance for each gaussian
+
+    Returns:
+        GaussianMixture: the new gaussian mixture
+    """
+    n, d = X.shape
+    mu_rev, _, _ = mixture
+    K = mu_rev.shape[0]
+    pi_rev = np.sum(post, axis=0)/n
+    delta = X.astype(bool).astype(int)
+    denom = post.T @ delta 
+    numer = post.T @ X 
+    update_indices = np.where(denom >= 1)  
+    mu_rev[update_indices] = numer[update_indices]/denom[update_indices]
+    denom_var = np.sum(post*np.sum(delta, axis=1).reshape(-1,1), axis=0)
+    norms = np.sum(X**2, axis=1)[:,None] + (delta @ mu_rev.T**2) - 2*(X @ mu_rev.T)
+    var_rev = np.maximum(np.sum(post*norms, axis=0)/denom_var, min_variance)  
+    return GaussianMixture(mu_rev, var_rev, pi_rev)
+
+
+ Implementing run : In em.py, fill in the run function so that it runs the EM algorithm. As before, the convergence criteria that you should use is that the improvement 
+in the log-likelihood is less than or equal to multiplied by the absolute value of the new log-likelihood. 
+
+def run(X: np.ndarray, mixture: GaussianMixture,
+        post: np.ndarray) -> Tuple[GaussianMixture, np.ndarray, float]:
+    """Runs the mixture model
+
+    Args:
+        X: (n, d) array holding the data
+        post: (n, K) array holding the soft counts
+            for all components for all examples
+
+    Returns:
+        GaussianMixture: the new gaussian mixture
+        np.ndarray: (n, K) array holding the soft counts
+            for all components for all examples
+        float: log-likelihood of the current assignment
+    """
+    old_log_lh = None
+    new_log_lh = None
+    while old_log_lh is None or (new_log_lh - old_log_lh > 1e-6*np.abs(new_log_lh)): 
+        old_log_lh = new_log_lh
+        post, new_log_lh = estep(X, mixture)
+        mixture = mstep(X, post, mixture)        
+    return mixture, post, new_log_lh
