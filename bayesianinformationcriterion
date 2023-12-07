@@ -1,0 +1,21 @@
+ Implementing the Bayesian Information Criterion : Fill in the missing Bayesian Information Criterion (BIC) calculation (bic function) in common.py. 
+
+ def bic(X: np.ndarray, mixture: GaussianMixture,
+        log_likelihood: float) -> float:
+    """Computes the Bayesian Information Criterion for a
+    mixture of gaussians
+
+    Args:
+        X: (n, d) array holding the data
+        mixture: a mixture of spherical gaussian
+        log_likelihood: the log-likelihood of the data
+
+    Returns:
+        float: the BIC for this mixture
+    """
+    n, d = X.shape
+    mu, var, p = mixture
+    n_para = mu.size + var.size + p.size - 1
+    BIC = log_likelihood - 1/2 * n_para * np.log(n)
+    return BIC
+
