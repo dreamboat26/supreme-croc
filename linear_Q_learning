@@ -1,0 +1,68 @@
+Epsilon-greedy exploration - Now you will write a function epsilon_greedy that implements the epsilon-greedy exploration policy using the current Q-function. 
+
+def tuple2index(action_index, object_index):
+    """Converts a tuple (a,b) to an index c"""
+    return action_index * NUM_OBJECTS + object_index
+
+
+def index2tuple(index):
+    """Converts an index c to a tuple (a,b)"""
+    return index // NUM_OBJECTS, index % NUM_OBJECTS
+
+
+
+def epsilon_greedy(state_vector, theta, epsilon):
+    """Returns an action selected by an epsilon-greedy exploration policy
+
+    Args:
+        state_vector (np.ndarray): extracted vector representation
+        theta (np.ndarray): current weight matrix
+        epsilon (float): the probability of choosing a random command
+
+    Returns:
+        (int, int): the indices describing the action/object to take
+    """
+    res = np.random.choice(a = [0, 1], p = [epsilon, 1-epsilon])
+    
+    # optimal policy
+    if res == 1:
+        Q = np.inner(theta, state_vector) # for each value of Q is superiposed by a state vector and theta (weighting) 
+        # np class is more complicated to fetch index for max value with its arguement 
+        ind = np.unravel_index(np.argmax(Q, axis=None), Q.shape)[0] # (n,) -> into numpy.int64
+        action_index, object_index = index2tuple(ind)
+    # random select action-object 
+    if res == 0:
+        action_index = np.random.randint(0, NUM_ACTIONS)
+        object_index = np.random.randint(0, NUM_OBJECTS)
+
+    return (action_index, object_index)
+
+
+Linear Q-learning - Write a function linear_q_learning that updates the theta weight matrix, given the transition data (s,a,R(s,c),s'). 
+def linear_q_learning(theta, current_state_vector, action_index, object_index,
+                      reward, next_state_vector, terminal):
+    """Update theta for a given transition
+
+    Args:
+        theta (np.ndarray): current weight matrix
+        current_state_vector (np.ndarray): vector representation of current state
+        action_index (int): index of the current action
+        object_index (int): index of the current object
+        reward (float): the immediate reward the agent recieves from playing current command
+        next_state_vector (np.ndarray): vector representation of next state
+        terminal (bool): True if this epsiode is over
+
+    Returns:
+        None
+    """
+    q_value = (theta @ current_state_vector)[tuple2index(action_index, object_index)]
+    max_q_value_next  = 0 if terminal else np.max(theta @ next_state_vector)
+    y = reward + (GAMMA * max_q_value_next)
+    delta_theta = (y - q_value) * current_state_vector
+    
+    # update 
+    theta[tuple2index(action_index, object_index)] \
+        = theta[tuple2index(action_index, object_index)] + (ALPHA * delta_theta)     
+
+
+
